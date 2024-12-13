@@ -36,10 +36,11 @@ public class MovimientoServiceImpl implements MovimientoService{
         Optional<Cuenta>cu = cuentaRepository.findById(idCuenta);
         if(cu.isPresent()){
             Cuenta cuentaBD= cu.get();
-           if(movimiento.getTipoMovimiento().equals("EGRESO") && cuentaBD.getSaldo() < movimiento.getValor()){
+            cuentaBD.setSaldo(cuentaBD.getSaldo()+movimiento.getValor());
+           if(movimiento.getTipoMovimiento().equals("EGRESO") && cuentaBD.getSaldo() < 0){
                throw new SaldosExepcion("Saldo insuficiente para realizar el movimiento.");
             }
-            cuentaBD.setSaldo(cuentaBD.getSaldo()+movimiento.getValor());
+           
             cuentaRepository.save(cuentaBD);
 
             movimiento.setFecha(LocalDateTime.now());
